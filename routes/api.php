@@ -22,6 +22,10 @@ Route::get('test', function () {
     return response('OK', 200);
 });
 
+Route::middleware([])->group(function () {
+    Route::get('users/{user_name}', [UserController::class, 'get']);
+});
+
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('users', [UserController::class, 'index']);
     Route::patch('users/{user}', [UserController::class, 'update']);

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\Models\Link;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -16,6 +17,33 @@ class UserController extends Controller
     {
         try {
             return response()->json(new UserResource(auth()->user()), 200);
+        } catch (\Exception $e) {
+            report($e);
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Get the specified user in storage.
+     */
+    public function get(string $user_name)
+    {
+        try {
+            $user_info = [];
+            $user_list = User::where('name', $user_name)->get();
+            if (count($user_list) < 1) {
+                $user = [];
+            } else {
+                foreach ($user_list as $item) {
+                   $user = new UserResource($item);
+                }
+
+                $links = Link::where('user_id', $user->id)->get();
+                $user_info = (new UserResource($user))->toArray(new Request());
+                $user_info["links"] = $links;
+            }
+
+            return response()->json($user_info, 200);
         } catch (\Exception $e) {
             report($e);
             return response()->json(['error' => $e->getMessage()], 500);
