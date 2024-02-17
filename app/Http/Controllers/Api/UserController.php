@@ -17,7 +17,8 @@ class UserController extends Controller
         try {
             return response()->json(new UserResource(auth()->user()), 200);
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 400);
+            report($e);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
