@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
+use App\Http\Resources\LinksCollection;
 use App\Models\User;
 use App\Models\Link;
 use Illuminate\Http\Request;
@@ -32,15 +33,16 @@ class UserController extends Controller
             $user_info = [];
             $user_list = User::where('name', $user_name)->get();
             if (count($user_list) < 1) {
-                $user = [];
+                return response()->json(['error' => 'User not found'], 404);
             } else {
                 foreach ($user_list as $item) {
                    $user = new UserResource($item);
                 }
 
                 $links = Link::where('user_id', $user->id)->get();
+                $link_map = new LinksCollection($links);
                 $user_info = (new UserResource($user))->toArray(new Request());
-                $user_info["links"] = $links;
+                $user_info["links"] =  $link_map;
             }
 
             return response()->json($user_info, 200);
