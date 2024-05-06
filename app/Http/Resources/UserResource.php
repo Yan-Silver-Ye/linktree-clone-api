@@ -20,7 +20,8 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'bio' => $this->bio,
-            'image' => url('/') . $this->image,
+            'image' => config('app.url') . $this->image,
+            
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

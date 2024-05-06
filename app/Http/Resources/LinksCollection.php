@@ -20,7 +20,7 @@ class LinksCollection extends ResourceCollection
                 'user_id' => $link->user_id,
                 'name' => $link->name,
                 'url' => $link->url,
-                'image' => url('/') . $link->image,
+                'image' => config('app.url') . $link->image,
             ];
         });
     }
